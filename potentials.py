@@ -1,5 +1,6 @@
 import numpy as np
 from scipy.sparse import diags
+
 class Potential:
     def __init__(self, mags, total_num) -> None:
         """
@@ -11,6 +12,7 @@ class Potential:
         """
         self.mags = mags
         self.matrix = diags([np.ones(total_num-1),-2*np.ones(total_num),np.ones(total_num-1)], [-1,0,1]).toarray()
+        # self.matrix = np.diag(potential_values) -- should this be a diagonal matrix for only potential instead of laplacian? Ignore if wrong
         self.total_num = total_num
 
     def getMatrix(self):
@@ -18,6 +20,7 @@ class Potential:
     
     def getMagnitudes(self):
         return self.mags
+
 class PotentialWithBarriers(Potential):
     def __init__(self, data, total_num) -> None:
         """
@@ -78,7 +81,15 @@ class FiniteSquareWell(PotentialWithBarriers):
         super().__init__(data, total_num)
 
 class FreeParticle(Potential):
-    pass
+    def __init__(self, total_num) -> None:
+        """
+        Inits a Free Particle potential (zero everywhere).
+
+        Params:
+            - total_num (int): Total number of x values.
+        """
+        mags = np.zeros(total_num)
+        super().__init__(mags, total_num)
 
 class TriangleWell(Potential):
     pass
